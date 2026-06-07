@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARK Add Applicant</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --ink: #162033;
+      --muted: #65738a;
+      --surface: #ffffff;
+      --line: #d7e2e7;
+      --nav: #10263b;
+      --primary: #1f6f78;
+      --accent: #c66b2a;
+      --good: #18794e;
+      --warn: #a45d00;
+      --risk: #b42318;
+      --shadow: 0 18px 44px rgba(35, 52, 70, .09);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side {
+      background: var(--nav);
+      color: #eef6f8;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #102033;
+      font-weight: 950;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.45), transparent),
+        linear-gradient(135deg, #77c6b1, #e5aa57);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .brand span {
+      display: block;
+      color: #bfd0dc;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #cbd9e3;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,.1);
+      color: #ffffff;
+    }
+
+    .side-note {
+      margin-top: auto;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #d8e5ec;
+      font-size: 13px;
+    }
+
+    .main {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .top p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 850;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(340px, .9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel,
+    .preview-card,
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    form {
+      display: grid;
+      gap: 18px;
+    }
+
+    fieldset {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin: 0;
+    }
+
+    legend {
+      padding: 0 6px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .preview-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .preview-card h2 {
+      margin-bottom: 0;
+      font-size: 20px;
+    }
+
+    .identity {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+    }
+
+    .identity strong {
+      font-size: 22px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafb;
+      color: var(--muted);
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: #edf9f2;
+      border-color: #b9e6cc;
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: #fff7eb;
+      border-color: #f5d39e;
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step-card {
+      box-shadow: none;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .step-card strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .step-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1040px) {
+      .shell,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .side-note {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main { padding: 16px; }
+      .top,
+      .panel-head {
+        flex-direction: column;
+      }
+      .form-grid,
+      .nav {
+        grid-template-columns: 1fr;
+      }
+      .wide { grid-column: auto; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="mark">SP</div>
+        <div>
+          <strong>SPARK</strong>
+          <span>Staff Processing &amp; Resource Kit</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="SPARK sample pages">
+        <a href="spark-concept-dashboard.html">Dashboard</a>
+        <a class="active" href="spark-add-applicant.html">Add Applicant</a>
+        <a href="spark-update-applicant.html">Update Applicant</a>
+        <a href="spark-applicant-overview.html">All Applicants</a>
+        <a href="spark-admin-panel.html">Admin Panel</a>
+        <a href="spark-analytics.html">Analytics</a>
+      </nav>
+      <div class="side-note">
+        Sample intake page for creating a new onboarding case and generating the first applicant workflow packet.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="top">
+        <div>
+          <p class="eyebrow">Applicant intake</p>
+          <h1>Add applicant onboarding case</h1>
+          <p>Create a case shell with applicant profile, vacancy data, HR assignment, onboarding stage, required documentation, and first routing notes.</p>
+        </div>
+        <a class="button secondary" href="spark-applicant-overview.html">View all applicants</a>
+      </section>
+
+      <section class="layout">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>New applicant case</h2>
+              <p>Fields mirror the information HR would need to initialize onboarding visibility.</p>
+            </div>
+            <span class="pill warn">Draft intake</span>
+          </div>
+
+          <form id="applicantForm">
+            <fieldset>
+              <legend>Applicant profile</legend>
+              <div class="form-grid">
+                <label>Last name
+                  <input name="lastName" value="Martin" required>
+                </label>
+                <label>First name
+                  <input name="firstName" value="Casey" required>
+                </label>
+                <label>Middle initial
+                  <input name="middleInitial" value="R" maxlength="1">
+                </label>
+                <label>SSN
+                  <input name="ssn" value="XXX-XX-1234" inputmode="numeric" aria-label="Social Security number">
+                </label>
+                <label>Email
+                  <input name="email" type="email" value="casey.martin@example.gov" required>
+                </label>
+                <label>Phone
+                  <input name="phone" value="555-0148">
+                </label>
+                <label class="wide">Home address
+                  <input name="address" value="1234 Federal Way">
+                </label>
+                <label>City
+                  <input name="city" value="Fort Worth">
+                </label>
+                <label>State
+                  <input name="state" value="TX" maxlength="2">
+                </label>
+                <label>ZIP code
+                  <input name="zip" value="76102" inputmode="numeric">
+                </label>
+                <label>Veterans preference
+                  <select name="preference">
+                    <option>Not claimed</option>
+                    <option selected>5-point preference</option>
+                    <option>10-point preference</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Vacancy and position</legend>
+              <div class="form-grid">
+                <label>Position title
+                  <input name="title" value="Correctional Officer" required>
+                </label>
+                <label>Announcement number
+                  <input name="announcement" value="BOP-2026-1321" required>
+                </label>
+                <label>Certificate number
+                  <input name="certificate" value="CRW-2026-0047" required>
+                </label>
+                <label>Duty station
+                  <input name="location" value="FCI Seagoville, TX">
+                </label>
+                <label>Target EOD
+                  <input name="eod" type="date" value="2026-07-13">
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Processing setup</legend>
+              <div class="form-grid">
+                <label>Assigned HR specialist
+                  <select name="specialist">
+                    <option>Garcia</option>
+                    <option selected>Patel</option>
+                    <option>Washington</option>
+                  </select>
+                </label>
+                <label>Initial stage
+                  <select name="stage">
+                    <option selected>OF-5</option>
+                    <option>Schedule Interview</option>
+                    <option>Conditional Offer</option>
+                    <option>Medical Evaluation</option>
+                    <option>NBIS</option>
+                    <option>RDF</option>
+                    <option>JSTAR</option>
+                    <option>Final Offer</option>
+                    <option>Entry on Duty</option>
+                  </select>
+                </label>
+                <label>Priority
+                  <select name="priority">
+                    <option>Standard</option>
+                    <option selected>High</option>
+                    <option>Critical</option>
+                  </select>
+                </label>
+                <label>Required first action
+                  <input name="action" value="Return signed tentative offer acknowledgement">
+                </label>
+                <label class="wide">Processing notes
+                  <textarea name="notes">Applicant selected from certificate. Start OF-5 processing, schedule interview, and prepare conditional offer routing once interview requirements are complete.</textarea>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="actions">
+              <button type="button" class="button secondary" id="resetPreview">Reset sample</button>
+              <button class="button" type="submit">Generate case preview</button>
+            </div>
+          </form>
+        </div>
+
+        <aside class="preview-card">
+          <div>
+            <p class="eyebrow">Generated case preview</p>
+            <h2>Applicant summary</h2>
+          </div>
+          <div class="identity" id="previewIdentity"></div>
+          <div class="steps">
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div><strong>Send applicant packet</strong><span>Welcome email, required forms, and onboarding portal instructions.</span></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div><strong>Assign workflow owners</strong><span>HR, security, medical, and credentialing actions are routed from the case.</span></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div><strong>Start analytics clock</strong><span>Certificate-to-EOD timing and bottleneck tracking begin when the case is created.</span></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById("applicantForm");
+    const preview = document.getElementById("previewIdentity");
+
+    function renderPreview() {
+      const data = new FormData(form);
+      const middleInitial = data.get("middleInitial") ? ` ${data.get("middleInitial")}.` : "";
+      const displayName = `${data.get("firstName")}${middleInitial} ${data.get("lastName")}`;
+      const ssn = data.get("ssn") || "";
+      const ssnLastFour = ssn.replace(/\D/g, "").slice(-4);
+      const maskedSsn = ssnLastFour ? `XXX-XX-${ssnLastFour}` : "Not entered";
+      preview.innerHTML = `
+        <strong>${displayName}</strong>
+        <div class="meta">
+          <span>SSN: ${maskedSsn}</span>
+          <span>${data.get("address")}</span>
+          <span>${data.get("city")}, ${data.get("state")} ${data.get("zip")}</span>
+        </div>
+        <div class="meta">
+          <span>${data.get("title")}</span>
+          <span>${data.get("announcement")}</span>
+          <span>Certificate: ${data.get("certificate")}</span>
+          <span>${data.get("location")}</span>
+        </div>
+        <div class="meta">
+          <span class="pill good">${data.get("stage")}</span>
+          <span class="pill warn">${data.get("priority")} priority</span>
+          <span>HR: ${data.get("specialist")}</span>
+        </div>
+        <p style="margin:0;color:var(--muted);font-size:13px;">Next action: ${data.get("action")}</p>
+      `;
+    }
+
+    form.addEventListener("input", renderPreview);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      renderPreview();
+    });
+    document.getElementById("resetPreview").addEventListener("click", () => {
+      form.reset();
+      renderPreview();
+    });
+
+    renderPreview();
+  </script>
+</body>
+</html>

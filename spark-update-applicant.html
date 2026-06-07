@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARK Update Applicant</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --ink: #162033;
+      --muted: #65738a;
+      --surface: #ffffff;
+      --line: #d7e2e7;
+      --nav: #10263b;
+      --primary: #1f6f78;
+      --accent: #c66b2a;
+      --good: #18794e;
+      --warn: #a45d00;
+      --risk: #b42318;
+      --shadow: 0 18px 44px rgba(35, 52, 70, .09);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    a { color: inherit; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side {
+      background: var(--nav);
+      color: #eef6f8;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #102033;
+      font-weight: 950;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.45), transparent),
+        linear-gradient(135deg, #77c6b1, #e5aa57);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .brand span {
+      display: block;
+      color: #bfd0dc;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #cbd9e3;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,.1);
+      color: #ffffff;
+    }
+
+    .side-note {
+      margin-top: auto;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #d8e5ec;
+      font-size: 13px;
+    }
+
+    .main {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .top p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 850;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, .72fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel,
+    .profile-card,
+    .task,
+    .activity {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel,
+    .profile-card {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .profile-card {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .profile-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .profile-top h2 {
+      margin: 0 0 4px;
+      font-size: 24px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafb;
+      color: var(--muted);
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: #edf9f2;
+      border-color: #b9e6cc;
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: #fff7eb;
+      border-color: #f5d39e;
+    }
+
+    .pill.risk {
+      color: var(--risk);
+      background: #fff3f1;
+      border-color: #fac8c1;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .step {
+      min-height: 58px;
+      border-radius: 6px;
+      background: #e7edf1;
+      border: 1px solid #d9e2e7;
+      padding: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: end;
+      overflow-wrap: anywhere;
+    }
+
+    .step.done {
+      background: #eaf7f1;
+      border-color: #b9e6cc;
+      color: var(--good);
+    }
+
+    .step.current {
+      background: #eef8f8;
+      border-color: #98d6d0;
+      color: var(--primary);
+      box-shadow: inset 0 -4px 0 var(--primary);
+    }
+
+    .update-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .task-list,
+    .activity-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task,
+    .activity {
+      box-shadow: none;
+      padding: 12px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .task input {
+      width: 18px;
+      height: 18px;
+      min-height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .task strong,
+    .activity strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .task span,
+    .activity span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .activity {
+      border-left: 4px solid var(--primary);
+    }
+
+    @media (max-width: 1040px) {
+      .shell,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .side {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .side-note {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main { padding: 16px; }
+      .top,
+      .profile-top,
+      .panel-head {
+        flex-direction: column;
+      }
+      .update-form,
+      .nav {
+        grid-template-columns: 1fr;
+      }
+      .timeline {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .wide,
+      .actions {
+        grid-column: auto;
+      }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="mark">SP</div>
+        <div>
+          <strong>SPARK</strong>
+          <span>Staff Processing &amp; Resource Kit</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="SPARK sample pages">
+        <a href="spark-concept-dashboard.html">Dashboard</a>
+        <a href="spark-add-applicant.html">Add Applicant</a>
+        <a class="active" href="spark-update-applicant.html">Update Applicant</a>
+        <a href="spark-applicant-overview.html">All Applicants</a>
+        <a href="spark-admin-panel.html">Admin Panel</a>
+        <a href="spark-analytics.html">Analytics</a>
+      </nav>
+      <div class="side-note">
+        Sample in-process workspace for changing stage, updating documentation status, and recording HR communication.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="top">
+        <div>
+          <p class="eyebrow">In-process case management</p>
+          <h1>Update applicant onboarding status</h1>
+          <p>Review an active applicant record, advance workflow milestones, update required actions, and preserve the processing history.</p>
+        </div>
+        <a class="button secondary" href="spark-applicant-overview.html">Back to all applicants</a>
+      </section>
+
+      <section class="profile-card">
+        <div class="profile-top">
+          <div>
+            <h2 id="applicantName">Morgan Lee</h2>
+            <div class="meta">
+              <span>Human Resources Assistant</span>
+              <span>HR-2026-0442</span>
+              <span>Grand Prairie, TX</span>
+              <span>HR: Patel</span>
+            </div>
+          </div>
+          <span class="pill warn" id="stagePill">NBIS</span>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Processing update</h2>
+              <p>Sample controls for updating an applicant while they move through the onboarding pipeline.</p>
+            </div>
+            <span class="pill good" id="saveState">Ready</span>
+          </div>
+
+          <form class="update-form" id="updateForm">
+            <label>Current stage
+                <select name="stage" id="stageSelect">
+                <option>OF-5</option>
+                <option>Schedule Interview</option>
+                <option>Conditional Offer</option>
+                <option>Medical Evaluation</option>
+                <option selected>NBIS</option>
+                <option>RDF</option>
+                <option>JSTAR</option>
+                <option>Final Offer</option>
+                <option>Entry on Duty</option>
+              </select>
+            </label>
+            <label>Next deadline
+              <input name="deadline" type="date" value="2026-06-07">
+            </label>
+            <label>Documentation status
+              <select name="docs">
+                <option>Packet complete</option>
+                <option selected>NBIS initiated; awaiting release</option>
+                <option>OF-5 received</option>
+                <option>Medical evaluation pending</option>
+                <option>RDF pending regional response</option>
+                <option>JSTAR waiver pending</option>
+              </select>
+            </label>
+            <label>Communication status
+              <select name="communication">
+                <option selected>Reminder sent</option>
+                <option>Applicant responded</option>
+                <option>Escalation needed</option>
+                <option>No action needed</option>
+              </select>
+            </label>
+            <label class="wide">Case note
+              <textarea name="note">NBIS has been initiated and is awaiting release. Review related sub-checkpoints before advancing to RDF.</textarea>
+            </label>
+            <div class="actions">
+              <button type="button" class="button secondary" id="advanceStage">Advance stage</button>
+              <button class="button" type="submit">Save update</button>
+            </div>
+          </form>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Applicant task list</h2>
+              <p>Stage checkpoints record completion dates for workflow tracking and analytics.</p>
+            </div>
+          </div>
+          <div class="task-list">
+            <label class="task">
+              <input type="checkbox" checked>
+              <span><strong>OF-5 sent and returned</strong><span>Date received recorded: May 22, 2026</span></span>
+              <span class="pill good">Done</span>
+            </label>
+            <label class="task">
+              <input type="checkbox">
+              <span><strong>NBIS initiated to applicant</strong><span>Check when applicant completes NBIS</span></span>
+              <span class="pill warn">Pending</span>
+            </label>
+            <label class="task">
+              <input type="checkbox">
+              <span><strong>NBIS release confirmation</strong><span>HR action due Jun 7, 2026; check when HR specialist releases</span></span>
+              <span class="pill warn">Pending</span>
+            </label>
+            <label class="task">
+              <input type="checkbox">
+              <span><strong>JSTAR packet built and released</strong><span>Record packet release date when complete</span></span>
+              <span class="pill warn">Pending</span>
+            </label>
+          </div>
+        </aside>
+      </section>
+
+      <section class="panel" style="margin-top:18px;">
+        <div class="panel-head">
+          <div>
+            <h2>Processing history</h2>
+            <p>Communication and workflow events create a basic audit trail for the onboarding case.</p>
+          </div>
+        </div>
+        <div class="activity-list" id="activityList">
+          <div class="activity"><strong>NBIS release pending</strong><span>May 28, 2026 - Review release status and supporting security checkpoints.</span></div>
+          <div class="activity"><strong>Case moved to NBIS</strong><span>May 24, 2026 - Conditional offer and medical evaluation checkpoints completed.</span></div>
+          <div class="activity"><strong>OF-5 and interview completed</strong><span>May 21, 2026 - Applicant moved into conditional offer processing.</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const stages = [
+      "OF-5",
+      "Schedule Interview",
+      "Conditional Offer",
+      "Medical Evaluation",
+      "NBIS",
+      "RDF",
+      "JSTAR",
+      "Final Offer",
+      "Entry on Duty"
+    ];
+
+    const stageSelect = document.getElementById("stageSelect");
+    const timeline = document.getElementById("timeline");
+    const stagePill = document.getElementById("stagePill");
+    const activityList = document.getElementById("activityList");
+
+    function renderTimeline() {
+      const current = stages.indexOf(stageSelect.value);
+      stagePill.textContent = stageSelect.value;
+      stagePill.className = `pill ${current >= 7 ? "good" : current >= 4 ? "warn" : "warn"}`;
+      timeline.innerHTML = stages.map((stage, index) => `
+        <div class="step ${index < current ? "done" : index === current ? "current" : ""}">${stage}</div>
+      `).join("");
+    }
+
+    document.getElementById("advanceStage").addEventListener("click", () => {
+      const next = Math.min(stages.length - 1, stages.indexOf(stageSelect.value) + 1);
+      stageSelect.value = stages[next];
+      renderTimeline();
+    });
+
+    stageSelect.addEventListener("change", renderTimeline);
+
+    document.getElementById("updateForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const data = new FormData(event.target);
+      document.getElementById("saveState").textContent = "Saved";
+      activityList.insertAdjacentHTML("afterbegin", `
+        <div class="activity"><strong>Status updated to ${data.get("stage")}</strong><span>May 28, 2026 - ${data.get("note")}</span></div>
+      `);
+      renderTimeline();
+    });
+
+    renderTimeline();
+  </script>
+</body>
+</html>

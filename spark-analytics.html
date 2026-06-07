@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARK Analytics</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --ink: #162033;
+      --muted: #65738a;
+      --surface: #ffffff;
+      --line: #d7e2e7;
+      --nav: #10263b;
+      --primary: #1f6f78;
+      --accent: #c66b2a;
+      --good: #18794e;
+      --warn: #a45d00;
+      --risk: #b42318;
+      --shadow: 0 18px 44px rgba(35, 52, 70, .09);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select { font: inherit; }
+    a { color: inherit; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side {
+      background: var(--nav);
+      color: #eef6f8;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #102033;
+      font-weight: 950;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.45), transparent),
+        linear-gradient(135deg, #77c6b1, #e5aa57);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .brand span {
+      display: block;
+      color: #bfd0dc;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #cbd9e3;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,.1);
+      color: #ffffff;
+    }
+
+    .side-note {
+      margin-top: auto;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #d8e5ec;
+      font-size: 13px;
+    }
+
+    .main {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .top p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 840px;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 850;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .metric,
+    .panel,
+    .row-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      padding: 16px;
+      min-height: 112px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: #e4ebef;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .bar div {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, .8fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row-card {
+      box-shadow: none;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .row-card h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafb;
+      color: var(--muted);
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: #edf9f2;
+      border-color: #b9e6cc;
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: #fff7eb;
+      border-color: #f5d39e;
+    }
+
+    .pill.risk {
+      color: var(--risk);
+      background: #fff3f1;
+      border-color: #fac8c1;
+    }
+
+    .section-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1120px) {
+      .shell,
+      .grid,
+      .section-row {
+        grid-template-columns: 1fr;
+      }
+      .side {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .nav {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .side-note {
+        display: none;
+      }
+      .kpis,
+      .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .main { padding: 16px; }
+      .top,
+      .panel-head,
+      .row-card {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+      .filters,
+      .kpis,
+      .nav {
+        grid-template-columns: 1fr;
+      }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="mark">SP</div>
+        <div>
+          <strong>SPARK</strong>
+          <span>Staff Processing &amp; Resource Kit</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="SPARK sample pages">
+        <a href="spark-concept-dashboard.html">Dashboard</a>
+        <a href="spark-add-applicant.html">Add Applicant</a>
+        <a href="spark-update-applicant.html">Update Applicant</a>
+        <a href="spark-applicant-overview.html">All Applicants</a>
+        <a href="spark-admin-panel.html">Admin Panel</a>
+        <a class="active" href="spark-analytics.html">Analytics</a>
+      </nav>
+      <div class="side-note">
+        Analytics sample page for reviewing overall onboarding speed, duty station trends, and position-specific processing patterns.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="top">
+        <div>
+          <p class="eyebrow">Operational intelligence</p>
+          <h1>SPARK analytics</h1>
+          <p>Track overall onboarding performance, compare duty stations, and break down processing patterns by position title, stage, and checkpoint timing.</p>
+        </div>
+        <a class="button secondary" href="spark-admin-panel.html">Open admin panel</a>
+      </section>
+
+      <section class="filters" aria-label="Analytics filters">
+        <label>Duty station
+          <select id="stationFilter">
+            <option value="all">All duty stations</option>
+          </select>
+        </label>
+        <label>Position
+          <select id="positionFilter">
+            <option value="all">All positions</option>
+          </select>
+        </label>
+        <label>Reporting window
+          <select id="windowFilter">
+            <option value="90">Last 90 days</option>
+            <option value="180" selected>Last 180 days</option>
+            <option value="365">Last 12 months</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="kpis">
+        <article class="metric">
+          <span>Active applicants</span>
+          <strong id="activeCount">0</strong>
+          <div class="bar"><div id="activeBar"></div></div>
+        </article>
+        <article class="metric">
+          <span>Average onboarding time</span>
+          <strong id="avgDays">0d</strong>
+          <div class="bar"><div id="daysBar"></div></div>
+        </article>
+        <article class="metric">
+          <span>Overdue checkpoints</span>
+          <strong id="overdueCount">0</strong>
+          <div class="bar"><div id="overdueBar"></div></div>
+        </article>
+        <article class="metric">
+          <span>Final offer rate</span>
+          <strong id="finalRate">0%</strong>
+          <div class="bar"><div id="finalBar"></div></div>
+        </article>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Duty station performance</h2>
+              <p>Compare onboarding volume, speed, overdue checkpoints, and final offer readiness by location.</p>
+            </div>
+            <span class="pill warn">Location view</span>
+          </div>
+          <div class="stack" id="stationList"></div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Stage timing</h2>
+              <p>Average days spent in each main SPARK stage for the selected filters.</p>
+            </div>
+          </div>
+          <div class="stack" id="stageList"></div>
+        </aside>
+      </section>
+
+      <section class="section-row">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Position breakdown</h2>
+              <p>Compare processing load and average cycle time by position title.</p>
+            </div>
+          </div>
+          <div class="stack" id="positionList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Bottleneck signals</h2>
+              <p>Highlights that should drive process review, escalation, or staffing support.</p>
+            </div>
+          </div>
+          <div class="stack" id="signalList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const cases = [
+      { station: "CRW - FMC Carswell", position: "Nurse Practitioner", stage: "Schedule Interview", days: 30, overdue: 3, finalReady: false },
+      { station: "CRW - FMC Carswell", position: "Correctional Officer", stage: "OF-5", days: 4, overdue: 0, finalReady: false },
+      { station: "FTW - FMC Fort Worth", position: "Health Services Technician", stage: "RDF", days: 34, overdue: 2, finalReady: false },
+      { station: "FTW - FMC Fort Worth", position: "Human Resources Assistant", stage: "NBIS", days: 21, overdue: 1, finalReady: false },
+      { station: "BRY - FPC Bryan", position: "Correctional Officer", stage: "Medical Evaluation", days: 27, overdue: 4, finalReady: false },
+      { station: "HER - FCI Herlong", position: "Contract Specialist", stage: "JSTAR", days: 42, overdue: 0, finalReady: false },
+      { station: "Central Office", position: "Budget Analyst", stage: "Final Offer", days: 39, overdue: 0, finalReady: true },
+      { station: "CRW - FMC Carswell", position: "Correctional Officer", stage: "Conditional Offer", days: 18, overdue: 1, finalReady: false },
+      { station: "FTW - FMC Fort Worth", position: "Correctional Officer", stage: "Entry on Duty", days: 52, overdue: 0, finalReady: true },
+      { station: "BRY - FPC Bryan", position: "Human Resources Assistant", stage: "NBIS", days: 26, overdue: 2, finalReady: false }
+    ];
+
+    const stageAverages = {
+      "OF-5": 5,
+      "Schedule Interview": 12,
+      "Conditional Offer": 9,
+      "Medical Evaluation": 18,
+      "NBIS": 21,
+      "RDF": 14,
+      "JSTAR": 16,
+      "Final Offer": 7,
+      "Entry on Duty": 10
+    };
+
+    const filters = { station: "all", position: "all" };
+
+    function populateFilters() {
+      const stations = [...new Set(cases.map(item => item.station))].sort();
+      const positions = [...new Set(cases.map(item => item.position))].sort();
+      document.getElementById("stationFilter").innerHTML = `<option value="all">All duty stations</option>${stations.map(item => `<option>${item}</option>`).join("")}`;
+      document.getElementById("positionFilter").innerHTML = `<option value="all">All positions</option>${positions.map(item => `<option>${item}</option>`).join("")}`;
+    }
+
+    function filteredCases() {
+      return cases.filter(item =>
+        (filters.station === "all" || item.station === filters.station)
+        && (filters.position === "all" || item.position === filters.position)
+      );
+    }
+
+    function average(items, getter) {
+      if (!items.length) return 0;
+      return Math.round(items.reduce((sum, item) => sum + getter(item), 0) / items.length);
+    }
+
+    function grouped(items, key) {
+      return items.reduce((groups, item) => {
+        groups[item[key]] = groups[item[key]] || [];
+        groups[item[key]].push(item);
+        return groups;
+      }, {});
+    }
+
+    function riskClass(overdue) {
+      if (overdue >= 4) return "risk";
+      if (overdue >= 1) return "warn";
+      return "good";
+    }
+
+    function renderKpis(items) {
+      const active = items.length;
+      const avg = average(items, item => item.days);
+      const overdue = items.reduce((sum, item) => sum + item.overdue, 0);
+      const finalRate = active ? Math.round((items.filter(item => item.finalReady).length / active) * 100) : 0;
+      document.getElementById("activeCount").textContent = active;
+      document.getElementById("avgDays").textContent = `${avg}d`;
+      document.getElementById("overdueCount").textContent = overdue;
+      document.getElementById("finalRate").textContent = `${finalRate}%`;
+      document.getElementById("activeBar").style.width = `${Math.min(100, active * 10)}%`;
+      document.getElementById("daysBar").style.width = `${Math.min(100, avg * 2)}%`;
+      document.getElementById("overdueBar").style.width = `${Math.min(100, overdue * 8)}%`;
+      document.getElementById("finalBar").style.width = `${finalRate}%`;
+    }
+
+    function renderStationList(items) {
+      const groups = grouped(items, "station");
+      document.getElementById("stationList").innerHTML = Object.entries(groups).map(([station, rows]) => {
+        const overdue = rows.reduce((sum, item) => sum + item.overdue, 0);
+        const avg = average(rows, item => item.days);
+        return `
+          <article class="row-card">
+            <div>
+              <h3>${station}</h3>
+              <div class="meta">
+                <span>${rows.length} active applicants</span>
+                <span>${avg}d average</span>
+                <span>${overdue} overdue checkpoints</span>
+              </div>
+              <div class="bar"><div style="width:${Math.min(100, avg * 2)}%"></div></div>
+            </div>
+            <span class="pill ${riskClass(overdue)}">${riskClass(overdue) === "risk" ? "High delay" : riskClass(overdue) === "warn" ? "Watch" : "On track"}</span>
+          </article>
+        `;
+      }).join("") || `<div class="row-card">No duty station data matches these filters.</div>`;
+    }
+
+    function renderPositionList(items) {
+      const groups = grouped(items, "position");
+      document.getElementById("positionList").innerHTML = Object.entries(groups).map(([position, rows]) => {
+        const overdue = rows.reduce((sum, item) => sum + item.overdue, 0);
+        const avg = average(rows, item => item.days);
+        return `
+          <article class="row-card">
+            <div>
+              <h3>${position}</h3>
+              <div class="meta">
+                <span>${rows.length} applicants</span>
+                <span>${avg}d average</span>
+                <span>${overdue} overdue</span>
+              </div>
+            </div>
+            <span class="pill ${riskClass(overdue)}">${rows.filter(item => item.finalReady).length} final-ready</span>
+          </article>
+        `;
+      }).join("") || `<div class="row-card">No position data matches these filters.</div>`;
+    }
+
+    function renderStageList(items) {
+      const currentStages = new Set(items.map(item => item.stage));
+      document.getElementById("stageList").innerHTML = Object.entries(stageAverages).map(([stage, days]) => {
+        const active = currentStages.has(stage);
+        return `
+          <article class="row-card">
+            <div>
+              <h3>${stage}</h3>
+              <div class="meta"><span>${days}d average duration</span><span>${active ? "Active in selection" : "No active cases selected"}</span></div>
+              <div class="bar"><div style="width:${Math.min(100, days * 4)}%"></div></div>
+            </div>
+            <span class="pill ${days >= 18 ? "risk" : days >= 12 ? "warn" : "good"}">${days >= 18 ? "Slow" : days >= 12 ? "Watch" : "Good"}</span>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderSignals(items) {
+      const avg = average(items, item => item.days);
+      const overdue = items.reduce((sum, item) => sum + item.overdue, 0);
+      const slowest = [...items].sort((a, b) => b.days - a.days)[0];
+      document.getElementById("signalList").innerHTML = `
+        <article class="row-card"><div><h3>Average cycle time</h3><div class="meta"><span>${avg} days across selected applicants</span></div></div><span class="pill ${avg >= 35 ? "risk" : avg >= 25 ? "warn" : "good"}">${avg >= 35 ? "High" : avg >= 25 ? "Watch" : "Good"}</span></article>
+        <article class="row-card"><div><h3>Overdue checkpoint volume</h3><div class="meta"><span>${overdue} open overdue checkpoint${overdue === 1 ? "" : "s"}</span></div></div><span class="pill ${riskClass(overdue)}">${riskClass(overdue) === "risk" ? "Escalate" : "Monitor"}</span></article>
+        <article class="row-card"><div><h3>Longest active case</h3><div class="meta"><span>${slowest ? `${slowest.position} at ${slowest.station}` : "No active cases"}</span></div></div><span class="pill warn">${slowest ? `${slowest.days}d` : "None"}</span></article>
+      `;
+    }
+
+    function renderAll() {
+      const items = filteredCases();
+      renderKpis(items);
+      renderStationList(items);
+      renderPositionList(items);
+      renderStageList(items);
+      renderSignals(items);
+    }
+
+    document.getElementById("stationFilter").addEventListener("change", event => {
+      filters.station = event.target.value;
+      renderAll();
+    });
+    document.getElementById("positionFilter").addEventListener("change", event => {
+      filters.position = event.target.value;
+      renderAll();
+    });
+    document.getElementById("windowFilter").addEventListener("change", renderAll);
+
+    populateFilters();
+    renderAll();
+  </script>
+</body>
+</html>

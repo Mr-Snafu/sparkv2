@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARK Onboarding Platform</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef3f8;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d9e2ec;
+      --primary: #226f75;
+      --primary-dark: #16545a;
+      --accent: #d07a31;
+      --good: #1f8a5b;
+      --warn: #b86b00;
+      --risk: #b42318;
+      --shadow: 0 16px 40px rgba(25, 38, 56, .08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #152238;
+      color: #eef4fb;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #48b2aa, #f0a45f);
+      display: grid;
+      place-items: center;
+      color: #102033;
+      font-weight: 900;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .brand span {
+      color: #b8c6d8;
+      font-size: 13px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: #cbd6e4;
+      text-align: left;
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav button.active,
+    .nav button:hover {
+      background: rgba(255,255,255,.1);
+      color: #ffffff;
+    }
+
+    .sidebar-note {
+      margin-top: auto;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      padding: 14px;
+      color: #cbd6e4;
+      font-size: 13px;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h2, h3 {
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .button:hover {
+      background: var(--primary-dark);
+    }
+
+    .button.secondary {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .button.secondary:hover {
+      background: var(--surface-2);
+    }
+
+    .button.danger {
+      background: #fff5f3;
+      color: var(--risk);
+      border-color: #ffd4ce;
+    }
+
+    .button.icon {
+      width: 40px;
+      padding: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat,
+    .panel,
+    .employee-card,
+    .task-row,
+    .doc-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat {
+      padding: 16px;
+      min-height: 112px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 30px;
+      line-height: 1.2;
+      margin-top: 8px;
+    }
+
+    .progress {
+      height: 8px;
+      background: #e8edf3;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .panel-header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 180px 180px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      min-height: 40px;
+      padding: 9px 11px;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .employee-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .employee-card {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .employee-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .employee-main h3 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .employee-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: #effaf5;
+      border-color: #bcebd4;
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: #fff7eb;
+      border-color: #f8d7a8;
+    }
+
+    .pill.risk {
+      color: var(--risk);
+      background: #fff5f3;
+      border-color: #ffd4ce;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .task-row {
+      box-shadow: none;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .task-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .task-title {
+      font-weight: 750;
+    }
+
+    .task-details {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .task-row.done .task-title {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .stage-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #dce6ef;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .stage.active .stage-dot,
+    .stage.complete .stage-dot {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .stage strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .stage span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .doc-card {
+      box-shadow: none;
+      padding: 14px;
+    }
+
+    .doc-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .doc-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      color: var(--muted);
+      background: #fbfcfe;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 29, 45, .42);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .dialog {
+      width: min(760px, 100%);
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      box-shadow: 0 30px 90px rgba(0,0,0,.22);
+      padding: 18px;
+    }
+
+    .dialog h2 {
+      margin: 0 0 4px;
+    }
+
+    .dialog > p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1040px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 14px 16px;
+      }
+
+      .nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .sidebar-note {
+        display: none;
+      }
+
+      .workspace,
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .main {
+        padding: 16px;
+      }
+
+      .topbar,
+      .employee-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar {
+        justify-content: stretch;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .stats,
+      .workspace,
+      .filters,
+      .form-grid,
+      .doc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid .wide {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand" aria-label="SPARK">
+        <div class="brand-mark">SP</div>
+        <div>
+          <strong>SPARK</strong>
+          <span>Staff Processing &amp; Resource Kit</span>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <button class="active" data-view="dashboard">Dashboard</button>
+        <button data-view="employees">Employees</button>
+        <button data-view="tasks">Tasks</button>
+        <button data-view="documents">Documents</button>
+      </nav>
+      <div class="sidebar-note">
+        Phase 1 stores demo records in this browser. The next build step can add a database, authentication, PDF generation, and department-specific workflow templates for SPARK.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div>
+          <h1>Employee onboarding command center</h1>
+          <p>Track new hires from offer acceptance through first-week readiness, coordinate owner-specific todos, and measure where the onboarding workflow slows down.</p>
+        </div>
+        <div class="toolbar">
+          <a class="button secondary" href="spark-concept-dashboard.html">Compare concept</a>
+          <button class="button secondary" id="resetDemoBtn">Reset demo</button>
+          <button class="button" id="openHireModalBtn">+ New hire</button>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Onboarding analytics">
+        <article class="stat">
+          <span>Active onboardings</span>
+          <strong id="activeCount">0</strong>
+          <div class="progress"><div id="activeProgress"></div></div>
+        </article>
+        <article class="stat">
+          <span>Average completion</span>
+          <strong id="avgCompletion">0%</strong>
+          <div class="progress"><div id="completionProgress"></div></div>
+        </article>
+        <article class="stat">
+          <span>Open tasks</span>
+          <strong id="openTaskCount">0</strong>
+          <div class="progress"><div id="taskProgress"></div></div>
+        </article>
+        <article class="stat">
+          <span>Average onboarding time</span>
+          <strong id="avgDays">0d</strong>
+          <div class="progress"><div id="daysProgress"></div></div>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="panel" id="employeePanel">
+          <div class="panel-header">
+            <div>
+              <h2>Employee pipeline</h2>
+              <p>Filter, review progress, and complete assigned onboarding tasks.</p>
+            </div>
+          </div>
+          <div class="filters">
+            <input id="searchInput" type="search" placeholder="Search employees, roles, departments">
+            <select id="statusFilter" aria-label="Filter by status">
+              <option value="all">All statuses</option>
+              <option value="Preboarding">Preboarding</option>
+              <option value="Day One">Day One</option>
+              <option value="First Week">First Week</option>
+              <option value="Complete">Complete</option>
+            </select>
+            <select id="departmentFilter" aria-label="Filter by department">
+              <option value="all">All departments</option>
+            </select>
+          </div>
+          <div class="employee-list" id="employeeList"></div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Workflow insight</h2>
+              <p>Current bottlenecks and process health.</p>
+            </div>
+          </div>
+          <div class="timeline" id="workflowTimeline"></div>
+        </aside>
+      </section>
+
+      <section class="panel" id="taskPanel" style="margin-top:18px;">
+        <div class="panel-header">
+          <div>
+            <h2>Global task board</h2>
+            <p>Owner-based todo list across every active onboarding.</p>
+          </div>
+          <select id="ownerFilter" aria-label="Filter tasks by owner" style="max-width:220px;">
+            <option value="all">All owners</option>
+          </select>
+        </div>
+        <div class="task-list" id="globalTaskList"></div>
+      </section>
+
+      <section class="panel" id="documentPanel" style="margin-top:18px;">
+        <div class="panel-header">
+          <div>
+            <h2>Documentation module</h2>
+            <p>Document templates planned for auto-filled PDFs as employee data is collected.</p>
+          </div>
+          <button class="button secondary" id="previewPacketBtn">Preview packet</button>
+        </div>
+        <div class="doc-grid">
+          <article class="doc-card">
+            <strong>New hire summary</strong>
+            <p>Role, department, start date, manager, equipment, and first-week schedule.</p>
+          </article>
+          <article class="doc-card">
+            <strong>Policy acknowledgements</strong>
+            <p>Employee handbook, IT acceptable use, safety, payroll, and benefits confirmation.</p>
+          </article>
+          <article class="doc-card">
+            <strong>Manager checklist</strong>
+            <p>Team introductions, role expectations, access validation, and 30-day goals.</p>
+          </article>
+          <article class="doc-card">
+            <strong>Workflow analytics brief</strong>
+            <p>Cycle time, delayed tasks, task owners, and stage-by-stage improvement notes.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="hireModal" role="dialog" aria-modal="true" aria-labelledby="hireModalTitle">
+    <div class="dialog">
+      <h2 id="hireModalTitle">Add new hire</h2>
+      <p>Create an onboarding record and generate the standard starter checklist.</p>
+      <form id="hireForm">
+        <div class="form-grid">
+          <label>Employee name
+            <input name="name" required placeholder="Jordan Lee">
+          </label>
+          <label>Role
+            <input name="role" required placeholder="Operations Coordinator">
+          </label>
+          <label>Department
+            <input name="department" required placeholder="Operations">
+          </label>
+          <label>Manager
+            <input name="manager" required placeholder="Cindy Smith">
+          </label>
+          <label>Start date
+            <input name="startDate" type="date" required>
+          </label>
+          <label>Status
+            <select name="status">
+              <option>Preboarding</option>
+              <option>Day One</option>
+              <option>First Week</option>
+              <option>Complete</option>
+            </select>
+          </label>
+          <label class="wide">Notes
+            <textarea name="notes" placeholder="Equipment needs, location, schedule, special workflow notes"></textarea>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="button secondary" id="closeHireModalBtn">Cancel</button>
+          <button class="button" type="submit">Create onboarding</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="packetModal" role="dialog" aria-modal="true" aria-labelledby="packetModalTitle">
+    <div class="dialog">
+      <h2 id="packetModalTitle">PDF packet preview</h2>
+      <p>This preview shows the data structure that will feed generated PDF packets in the next module.</p>
+      <pre id="packetPreview" style="white-space:pre-wrap;background:#f6f8fb;border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;"></pre>
+      <div class="form-actions">
+        <button type="button" class="button secondary" id="closePacketModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const storageKey = "spark-onboarding-v1";
+    const legacyStorageKey = "cindy-hr-onboarding-v1";
+    const today = new Date();
+
+    const taskTemplate = [
+      { title: "Send offer acceptance packet", owner: "HR", stage: "Preboarding", dueOffset: -7 },
+      { title: "Collect employee profile and tax details", owner: "HR", stage: "Preboarding", dueOffset: -5 },
+      { title: "Order laptop and workspace equipment", owner: "IT", stage: "Preboarding", dueOffset: -4 },
+      { title: "Create system accounts and access groups", owner: "IT", stage: "Preboarding", dueOffset: -2 },
+      { title: "Schedule first-day orientation", owner: "HR", stage: "Day One", dueOffset: 0 },
+      { title: "Manager welcome and role expectations", owner: "Manager", stage: "Day One", dueOffset: 0 },
+      { title: "Benefits enrollment walkthrough", owner: "HR", stage: "First Week", dueOffset: 3 },
+      { title: "30-day goals and training plan", owner: "Manager", stage: "First Week", dueOffset: 5 }
+    ];
+
+    const demoEmployees = [
+      {
+        id: "emp-1001",
+        name: "Maya Johnson",
+        role: "HR Generalist",
+        department: "People Operations",
+        manager: "Cindy Smith",
+        startDate: "2026-05-18",
+        status: "First Week",
+        notes: "Needs benefits review and updated department handbook attachment.",
+        tasks: []
+      },
+      {
+        id: "emp-1002",
+        name: "Ethan Brooks",
+        role: "Field Project Coordinator",
+        department: "Operations",
+        manager: "Seth Martin",
+        startDate: "2026-05-28",
+        status: "Preboarding",
+        notes: "Remote-first employee. Ship laptop and safety training packet.",
+        tasks: []
+      },
+      {
+        id: "emp-1003",
+        name: "Priya Nair",
+        role: "Payroll Specialist",
+        department: "Finance",
+        manager: "Cindy Smith",
+        startDate: "2026-05-20",
+        status: "Day One",
+        notes: "Payroll system permissions require manager approval.",
+        tasks: []
+      }
+    ];
+
+    const state = {
+      employees: loadEmployees(),
+      filters: {
+        search: "",
+        status: "all",
+        department: "all",
+        owner: "all"
+      }
+    };
+
+    function loadEmployees() {
+      const stored = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
+      if (stored) return JSON.parse(stored);
+      return demoEmployees.map((employee, index) => ({
+        ...employee,
+        tasks: createTasks(employee.startDate, index)
+      }));
+    }
+
+    function saveEmployees() {
+      localStorage.setItem(storageKey, JSON.stringify(state.employees));
+    }
+
+    function createTasks(startDate, seed = 0) {
+      return taskTemplate.map((task, index) => {
+        const dueDate = addDays(startDate, task.dueOffset);
+        const completed = index < seed + 2;
+        return {
+          id: `task-${Date.now()}-${seed}-${index}`,
+          ...task,
+          dueDate,
+          completed
+        };
+      });
+    }
+
+    function addDays(dateString, days) {
+      const date = new Date(`${dateString}T12:00:00`);
+      date.setDate(date.getDate() + days);
+      return date.toISOString().slice(0, 10);
+    }
+
+    function daysBetween(startDate, endDate = today) {
+      const start = new Date(`${startDate}T12:00:00`);
+      return Math.max(0, Math.round((endDate - start) / 86400000));
+    }
+
+    function completion(employee) {
+      if (!employee.tasks.length) return 0;
+      return Math.round((employee.tasks.filter(task => task.completed).length / employee.tasks.length) * 100);
+    }
+
+    function visibleEmployees() {
+      const query = state.filters.search.trim().toLowerCase();
+      return state.employees.filter(employee => {
+        const text = `${employee.name} ${employee.role} ${employee.department} ${employee.manager}`.toLowerCase();
+        const matchesSearch = !query || text.includes(query);
+        const matchesStatus = state.filters.status === "all" || employee.status === state.filters.status;
+        const matchesDepartment = state.filters.department === "all" || employee.department === state.filters.department;
+        return matchesSearch && matchesStatus && matchesDepartment;
+      });
+    }
+
+    function statusClass(employee) {
+      if (employee.status === "Complete") return "good";
+      const overdue = employee.tasks.some(task => !task.completed && new Date(`${task.dueDate}T12:00:00`) < today);
+      return overdue ? "risk" : "warn";
+    }
+
+    function render() {
+      renderFilters();
+      renderStats();
+      renderEmployees();
+      renderWorkflow();
+      renderGlobalTasks();
+      saveEmployees();
+    }
+
+    function renderFilters() {
+      const departments = [...new Set(state.employees.map(employee => employee.department))].sort();
+      const departmentFilter = document.getElementById("departmentFilter");
+      const selectedDepartment = departmentFilter.value || state.filters.department;
+      departmentFilter.innerHTML = `<option value="all">All departments</option>${departments.map(department => `<option value="${department}">${department}</option>`).join("")}`;
+      departmentFilter.value = departments.includes(selectedDepartment) ? selectedDepartment : "all";
+
+      const owners = [...new Set(state.employees.flatMap(employee => employee.tasks.map(task => task.owner)))].sort();
+      const ownerFilter = document.getElementById("ownerFilter");
+      const selectedOwner = ownerFilter.value || state.filters.owner;
+      ownerFilter.innerHTML = `<option value="all">All owners</option>${owners.map(owner => `<option value="${owner}">${owner}</option>`).join("")}`;
+      ownerFilter.value = owners.includes(selectedOwner) ? selectedOwner : "all";
+    }
+
+    function renderStats() {
+      const active = state.employees.filter(employee => employee.status !== "Complete");
+      const tasks = state.employees.flatMap(employee => employee.tasks);
+      const openTasks = tasks.filter(task => !task.completed);
+      const avgCompletion = state.employees.length
+        ? Math.round(state.employees.reduce((sum, employee) => sum + completion(employee), 0) / state.employees.length)
+        : 0;
+      const avgDays = state.employees.length
+        ? Math.round(state.employees.reduce((sum, employee) => sum + daysBetween(employee.startDate), 0) / state.employees.length)
+        : 0;
+
+      document.getElementById("activeCount").textContent = active.length;
+      document.getElementById("avgCompletion").textContent = `${avgCompletion}%`;
+      document.getElementById("openTaskCount").textContent = openTasks.length;
+      document.getElementById("avgDays").textContent = `${avgDays}d`;
+
+      document.getElementById("activeProgress").style.width = `${Math.min(100, active.length * 25)}%`;
+      document.getElementById("completionProgress").style.width = `${avgCompletion}%`;
+      document.getElementById("taskProgress").style.width = `${tasks.length ? Math.round((openTasks.length / tasks.length) * 100) : 0}%`;
+      document.getElementById("daysProgress").style.width = `${Math.min(100, avgDays * 8)}%`;
+    }
+
+    function renderEmployees() {
+      const list = document.getElementById("employeeList");
+      const employees = visibleEmployees();
+      if (!employees.length) {
+        list.innerHTML = `<div class="empty">No employee records match these filters.</div>`;
+        return;
+      }
+
+      list.innerHTML = employees.map(employee => {
+        const percent = completion(employee);
+        const openTasks = employee.tasks.filter(task => !task.completed).length;
+        return `
+          <article class="employee-card">
+            <div class="employee-main">
+              <div>
+                <h3>${employee.name}</h3>
+                <div class="employee-meta">
+                  <span>${employee.role}</span>
+                  <span>${employee.department}</span>
+                  <span>Manager: ${employee.manager}</span>
+                  <span>Starts: ${formatDate(employee.startDate)}</span>
+                </div>
+              </div>
+              <div class="toolbar">
+                <span class="pill ${statusClass(employee)}">${employee.status}</span>
+                <button class="button secondary" data-action="advance" data-id="${employee.id}">Advance</button>
+              </div>
+            </div>
+            <div>
+              <div class="employee-meta">
+                <span>${percent}% complete</span>
+                <span>${openTasks} open tasks</span>
+                <span>${daysBetween(employee.startDate)} days in onboarding</span>
+              </div>
+              <div class="progress"><div style="width:${percent}%"></div></div>
+            </div>
+            <div class="task-list">
+              ${employee.tasks.map(task => renderTask(task, employee.id)).join("")}
+            </div>
+            ${employee.notes ? `<div class="empty">${employee.notes}</div>` : ""}
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTask(task, employeeId) {
+      const overdue = !task.completed && new Date(`${task.dueDate}T12:00:00`) < today;
+      return `
+        <div class="task-row ${task.completed ? "done" : ""}">
+          <input type="checkbox" ${task.completed ? "checked" : ""} data-action="toggle-task" data-employee-id="${employeeId}" data-task-id="${task.id}" aria-label="Mark ${task.title} complete">
+          <div>
+            <div class="task-title">${task.title}</div>
+            <div class="task-details">${task.owner} &middot; ${task.stage} &middot; Due ${formatDate(task.dueDate)}</div>
+          </div>
+          <span class="pill ${task.completed ? "good" : overdue ? "risk" : "warn"}">${task.completed ? "Done" : overdue ? "Overdue" : "Open"}</span>
+        </div>
+      `;
+    }
+
+    function renderWorkflow() {
+      const stages = ["Preboarding", "Day One", "First Week", "Complete"];
+      const timeline = document.getElementById("workflowTimeline");
+      timeline.innerHTML = stages.map((stage, index) => {
+        const count = state.employees.filter(employee => employee.status === stage).length;
+        const activeClass = count ? "active" : "";
+        return `
+          <div class="stage ${stage === "Complete" ? "complete" : activeClass}">
+            <div class="stage-dot">${index + 1}</div>
+            <div>
+              <strong>${stage}</strong>
+              <span>${count} employee${count === 1 ? "" : "s"} currently here</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderGlobalTasks() {
+      const list = document.getElementById("globalTaskList");
+      const tasks = state.employees.flatMap(employee =>
+        employee.tasks.map(task => ({ ...task, employeeName: employee.name, employeeId: employee.id }))
+      ).filter(task => state.filters.owner === "all" || task.owner === state.filters.owner)
+       .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+      if (!tasks.length) {
+        list.innerHTML = `<div class="empty">No tasks match the selected owner.</div>`;
+        return;
+      }
+
+      list.innerHTML = tasks.map(task => `
+        <div class="task-row ${task.completed ? "done" : ""}">
+          <input type="checkbox" ${task.completed ? "checked" : ""} data-action="toggle-task" data-employee-id="${task.employeeId}" data-task-id="${task.id}" aria-label="Mark ${task.title} complete">
+          <div>
+            <div class="task-title">${task.title}</div>
+            <div class="task-details">${task.employeeName} &middot; ${task.owner} &middot; Due ${formatDate(task.dueDate)}</div>
+          </div>
+          <span class="pill ${task.completed ? "good" : "warn"}">${task.completed ? "Done" : task.owner}</span>
+        </div>
+      `).join("");
+    }
+
+    function formatDate(dateString) {
+      return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${dateString}T12:00:00`));
+    }
+
+    function advanceEmployee(employeeId) {
+      const order = ["Preboarding", "Day One", "First Week", "Complete"];
+      const employee = state.employees.find(item => item.id === employeeId);
+      const index = order.indexOf(employee.status);
+      employee.status = order[Math.min(order.length - 1, index + 1)];
+      if (employee.status === "Complete") {
+        employee.tasks.forEach(task => task.completed = true);
+      }
+      render();
+    }
+
+    function toggleTask(employeeId, taskId, checked) {
+      const employee = state.employees.find(item => item.id === employeeId);
+      const task = employee.tasks.find(item => item.id === taskId);
+      task.completed = checked;
+      if (completion(employee) === 100) employee.status = "Complete";
+      render();
+    }
+
+    function addEmployee(formData) {
+      const employee = {
+        id: `emp-${Date.now()}`,
+        name: formData.get("name"),
+        role: formData.get("role"),
+        department: formData.get("department"),
+        manager: formData.get("manager"),
+        startDate: formData.get("startDate"),
+        status: formData.get("status"),
+        notes: formData.get("notes"),
+        tasks: createTasks(formData.get("startDate"), state.employees.length)
+      };
+      state.employees.unshift(employee);
+      render();
+    }
+
+    function previewPacket() {
+      const payload = {
+        generatedAt: today.toISOString(),
+        employees: state.employees.map(employee => ({
+          name: employee.name,
+          role: employee.role,
+          department: employee.department,
+          manager: employee.manager,
+          startDate: employee.startDate,
+          status: employee.status,
+          completion: `${completion(employee)}%`,
+          openTasks: employee.tasks.filter(task => !task.completed).map(task => ({
+            title: task.title,
+            owner: task.owner,
+            dueDate: task.dueDate
+          }))
+        }))
+      };
+      document.getElementById("packetPreview").textContent = JSON.stringify(payload, null, 2);
+      document.getElementById("packetModal").classList.add("open");
+    }
+
+    document.getElementById("searchInput").addEventListener("input", event => {
+      state.filters.search = event.target.value;
+      render();
+    });
+
+    document.getElementById("statusFilter").addEventListener("change", event => {
+      state.filters.status = event.target.value;
+      render();
+    });
+
+    document.getElementById("departmentFilter").addEventListener("change", event => {
+      state.filters.department = event.target.value;
+      render();
+    });
+
+    document.getElementById("ownerFilter").addEventListener("change", event => {
+      state.filters.owner = event.target.value;
+      render();
+    });
+
+    document.body.addEventListener("click", event => {
+      const action = event.target.dataset.action;
+      if (action === "advance") advanceEmployee(event.target.dataset.id);
+    });
+
+    document.body.addEventListener("change", event => {
+      if (event.target.dataset.action === "toggle-task") {
+        toggleTask(event.target.dataset.employeeId, event.target.dataset.taskId, event.target.checked);
+      }
+    });
+
+    document.querySelectorAll(".nav button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".nav button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        const target = {
+          dashboard: ".stats",
+          employees: "#employeePanel",
+          tasks: "#taskPanel",
+          documents: "#documentPanel"
+        }[button.dataset.view];
+        document.querySelector(target).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    document.getElementById("openHireModalBtn").addEventListener("click", () => {
+      document.getElementById("hireModal").classList.add("open");
+    });
+
+    document.getElementById("closeHireModalBtn").addEventListener("click", () => {
+      document.getElementById("hireModal").classList.remove("open");
+    });
+
+    document.getElementById("closePacketModalBtn").addEventListener("click", () => {
+      document.getElementById("packetModal").classList.remove("open");
+    });
+
+    document.getElementById("previewPacketBtn").addEventListener("click", previewPacket);
+
+    document.getElementById("resetDemoBtn").addEventListener("click", () => {
+      localStorage.removeItem(storageKey);
+      localStorage.removeItem(legacyStorageKey);
+      state.employees = loadEmployees();
+      state.filters = { search: "", status: "all", department: "all", owner: "all" };
+      document.getElementById("searchInput").value = "";
+      document.getElementById("statusFilter").value = "all";
+      render();
+    });
+
+    document.getElementById("hireForm").addEventListener("submit", event => {
+      event.preventDefault();
+      addEmployee(new FormData(event.target));
+      event.target.reset();
+      document.getElementById("hireModal").classList.remove("open");
+    });
+
+    document.querySelector("input[name='startDate']").value = today.toISOString().slice(0, 10);
+    render();
+  </script>
+</body>
+</html>

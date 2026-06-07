@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARK Concept Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --ink: #162033;
+      --muted: #65738a;
+      --surface: #ffffff;
+      --surface-2: #edf3f5;
+      --line: #d7e2e7;
+      --nav: #10263b;
+      --primary: #1f6f78;
+      --primary-2: #2f8f83;
+      --accent: #c66b2a;
+      --gold: #d7a23a;
+      --good: #18794e;
+      --warn: #a45d00;
+      --risk: #b42318;
+      --shadow: 0 18px 44px rgba(35, 52, 70, .09);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side {
+      background: var(--nav);
+      color: #eef6f8;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #102033;
+      font-weight: 950;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.45), transparent),
+        linear-gradient(135deg, #77c6b1, #e5aa57);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      display: block;
+      color: #bfd0dc;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .mission {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #d8e5ec;
+      font-size: 13px;
+    }
+
+    .mission strong {
+      display: block;
+      color: #ffffff;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #cbd9e3;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,.1);
+      color: #ffffff;
+    }
+
+    .side-footer {
+      margin-top: auto;
+      display: grid;
+      gap: 10px;
+      color: #bfd0dc;
+      font-size: 13px;
+    }
+
+    .side-footer a {
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .main {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy,
+    .panel,
+    .metric,
+    .case-card,
+    .resource-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: 24px;
+      display: grid;
+      align-content: center;
+      gap: 14px;
+      min-height: 220px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      max-width: 760px;
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .hero-copy > p:not(.eyebrow) {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .readiness {
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(31,111,120,.08), rgba(255,255,255,0)),
+        var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 14px;
+    }
+
+    .readiness h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .score {
+      display: grid;
+      place-items: center;
+      min-height: 132px;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at center, #ffffff 0 48%, transparent 49%),
+        conic-gradient(var(--primary) 0 74%, #dfe8ec 74% 100%);
+    }
+
+    .score strong {
+      display: block;
+      font-size: 36px;
+      line-height: 1;
+    }
+
+    .score span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      padding: 16px;
+      min-height: 116px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: #e4ebef;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .bar div {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(360px, .65fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0 0 4px;
+      font-size: 19px;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 170px 170px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    .case-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .case-card {
+      box-shadow: none;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .case-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .case-top h3 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafb;
+      color: var(--muted);
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: #edf9f2;
+      border-color: #b9e6cc;
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: #fff7eb;
+      border-color: #f5d39e;
+    }
+
+    .pill.risk {
+      color: var(--risk);
+      background: #fff3f1;
+      border-color: #fac8c1;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .step {
+      min-height: 58px;
+      border-radius: 6px;
+      background: #e7edf1;
+      border: 1px solid #d9e2e7;
+      padding: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: end;
+      overflow-wrap: anywhere;
+    }
+
+    .step.done {
+      background: #eaf7f1;
+      border-color: #b9e6cc;
+      color: var(--good);
+    }
+
+    .step.current {
+      background: #eef8f8;
+      border-color: #98d6d0;
+      color: var(--primary);
+      box-shadow: inset 0 -4px 0 var(--primary);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .bars {
+      display: grid;
+      gap: 11px;
+    }
+
+    .bar-row {
+      display: grid;
+      gap: 5px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .resource-card {
+      box-shadow: none;
+      padding: 14px;
+      min-height: 136px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+
+    .resource-card strong {
+      font-size: 15px;
+    }
+
+    .resource-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+    }
+
+    .check-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+
+    .check-item strong {
+      font-size: 14px;
+    }
+
+    .check-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .admin-tile {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fbfcfd;
+    }
+
+    .admin-tile strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .admin-tile span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1120px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .side-footer,
+      .mission {
+        display: none;
+      }
+
+      .hero,
+      .grid,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .main {
+        padding: 16px;
+      }
+
+      .nav,
+      .kpis,
+      .filters,
+      .resource-grid,
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .case-top,
+      .panel-head {
+        flex-direction: column;
+      }
+
+      .timeline {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="mark">SP</div>
+        <div>
+          <strong>SPARK</strong>
+          <span>Staff Processing &amp; Resource Kit</span>
+        </div>
+      </div>
+
+      <div class="mission">
+        <strong>Mission</strong>
+        Ignite a more efficient, transparent, and resource-driven onboarding experience for federal applicants and HR professionals.
+      </div>
+
+      <nav class="nav" aria-label="SPARK concept sections">
+        <a class="active" href="#overview">Overview</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#resources">Resources</a>
+        <a href="#admin">Admin</a>
+        <a href="spark-add-applicant.html">Add Applicant</a>
+        <a href="spark-update-applicant.html">Update Applicant</a>
+        <a href="spark-applicant-overview.html">All Applicants</a>
+        <a href="spark-admin-panel.html">Admin Panel</a>
+        <a href="spark-analytics.html">Analytics</a>
+      </nav>
+
+      <div class="side-footer">
+        <span>Comparison concept based on the expanded SPARK prototype brief.</span>
+        <a href="index.html">Open current dashboard</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero" id="overview">
+        <div class="hero-copy">
+          <p class="eyebrow">Federal applicant onboarding shell</p>
+          <h1>Centralized onboarding visibility, resources, and operational intelligence.</h1>
+          <p>SPARK unifies applicant status, HR workflow monitoring, resource guidance, compliance readiness, and analytics in one scalable dashboard environment.</p>
+          <div class="hero-actions">
+            <a class="button" href="#workflow">Review workflow</a>
+            <a class="button secondary" href="spark-applicant-overview.html">View applicants</a>
+            <a class="button secondary" href="#resources">Open resources</a>
+          </div>
+        </div>
+
+        <aside class="readiness" aria-label="Readiness score">
+          <div>
+            <h2>Prototype readiness</h2>
+            <p style="margin:4px 0 0;color:var(--muted);font-size:13px;">Shell framework for phased development and operational testing.</p>
+          </div>
+          <div class="score">
+            <div>
+              <strong>74%</strong>
+              <span>Concept mapped</span>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="pill good">Dashboard shell</span>
+            <span class="pill warn">API-ready future</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="kpis" aria-label="Operational analytics">
+        <article class="metric">
+          <span>Active onboarding cases</span>
+          <strong>128</strong>
+          <div class="bar"><div style="width:78%"></div></div>
+        </article>
+        <article class="metric">
+          <span>Average certificate-to-EOD</span>
+          <strong>36d</strong>
+          <div class="bar"><div style="width:61%"></div></div>
+        </article>
+        <article class="metric">
+          <span>Overdue applicant actions</span>
+          <strong>19</strong>
+          <div class="bar"><div style="width:38%"></div></div>
+        </article>
+        <article class="metric">
+          <span>Final offer conversion</span>
+          <strong>82%</strong>
+          <div class="bar"><div style="width:82%"></div></div>
+        </article>
+      </section>
+
+      <section class="grid" id="workflow">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Applicant overview dashboard</h2>
+              <p>Applicant profile, announcement, HR specialist, duty station, stage, deadlines, and pending documentation.</p>
+            </div>
+            <span class="pill good">Live case view</span>
+          </div>
+
+          <div class="filters">
+            <input id="caseSearch" type="search" placeholder="Search applicant, announcement, location">
+            <select id="stageFilter" aria-label="Filter by onboarding stage">
+              <option value="all">All stages</option>
+              <option>OF-5</option>
+              <option>Schedule Interview</option>
+              <option>Conditional Offer</option>
+              <option>Medical Evaluation</option>
+              <option>NBIS</option>
+              <option>RDF</option>
+              <option>JSTAR</option>
+              <option>Final Offer</option>
+              <option>Entry on Duty</option>
+            </select>
+            <select id="specialistFilter" aria-label="Filter by HR specialist">
+              <option value="all">All specialists</option>
+              <option>Garcia</option>
+              <option>Patel</option>
+              <option>Washington</option>
+            </select>
+          </div>
+
+          <div class="case-list" id="caseList"></div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Workflow bottlenecks</h2>
+              <p>Stages most likely to slow current onboarding movement.</p>
+            </div>
+          </div>
+          <div class="bars">
+            <div class="bar-row">
+              <div class="bar-label"><span>NBIS release delays</span><strong>34%</strong></div>
+              <div class="bar"><div style="width:34%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Medical evaluation pending</span><strong>27%</strong></div>
+              <div class="bar"><div style="width:27%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>RDF regional clearance</span><strong>22%</strong></div>
+              <div class="bar"><div style="width:22%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>EOD scheduling</span><strong>17%</strong></div>
+              <div class="bar"><div style="width:17%"></div></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="split" id="analytics">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Analytics and operational intelligence</h2>
+              <p>Pipeline, workforce, HR operations, and compliance signals for staffing leadership.</p>
+            </div>
+          </div>
+          <div class="admin-grid">
+            <div class="admin-tile"><strong>41</strong><span>Applicants in NBIS or RDF review</span></div>
+            <div class="admin-tile"><strong>11</strong><span>Medical evaluation delays</span></div>
+            <div class="admin-tile"><strong>7</strong><span>Expiring onboarding requirements</span></div>
+            <div class="admin-tile"><strong>23d</strong><span>Average response timeline</span></div>
+            <div class="admin-tile"><strong>16</strong><span>Cases per HR specialist</span></div>
+            <div class="admin-tile"><strong>92%</strong><span>Audit-ready records</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Compliance monitor</h2>
+              <p>Missing documentation, overdue actions, and audit-readiness status.</p>
+            </div>
+          </div>
+          <div class="check-list">
+            <div class="check-item">
+              <div class="check-dot"></div>
+              <div><strong>OF-306 missing</strong><br><span>6 applicant records need follow-up</span></div>
+              <span class="pill risk">Overdue</span>
+            </div>
+            <div class="check-item">
+              <div class="check-dot" style="background:var(--gold);"></div>
+              <div><strong>Fingerprinting not scheduled</strong><br><span>9 records pending applicant action</span></div>
+              <span class="pill warn">Pending</span>
+            </div>
+            <div class="check-item">
+              <div class="check-dot" style="background:var(--good);"></div>
+              <div><strong>I-9 guidance delivered</strong><br><span>New packet message sent to current cohort</span></div>
+              <span class="pill good">Ready</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="resources" style="margin-top:18px;">
+        <div class="panel-head">
+          <div>
+            <h2>Applicant resource center</h2>
+            <p>Centralized federal forms, security guidance, benefits information, orientation resources, and FAQs.</p>
+          </div>
+          <span class="pill warn">Dynamic delivery future</span>
+        </div>
+        <div class="resource-grid">
+          <article class="resource-card">
+            <strong>Federal forms and documents</strong>
+            <p>OF-306, SF-61, I-9 guidance, direct deposit, benefits enrollment, and required applicant packets.</p>
+          </article>
+          <article class="resource-card">
+            <strong>Security processing resources</strong>
+            <p>NBIS instructions, fingerprinting guidance, security FAQs, and clearance process information.</p>
+          </article>
+          <article class="resource-card">
+            <strong>Employee benefits resources</strong>
+            <p>FEHB, TSP enrollment, leave accrual, retirement systems, and payroll setup guidance.</p>
+          </article>
+          <article class="resource-card">
+            <strong>Orientation resources</strong>
+            <p>Reporting instructions, facility maps, parking guidance, orientation schedules, and equipment requirements.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="admin" style="margin-top:18px;">
+        <div class="panel-head">
+          <div>
+            <h2>Administrative dashboard</h2>
+            <p>Open case monitoring, workload balancing, applicant queues, communication tracking, and reporting exports.</p>
+          </div>
+          <span class="pill good">Leadership view</span>
+        </div>
+        <div class="admin-grid">
+          <div class="admin-tile"><strong>Garcia</strong><span>18 assigned cases, 4 overdue actions</span></div>
+          <div class="admin-tile"><strong>Patel</strong><span>15 assigned cases, 1 overdue action</span></div>
+          <div class="admin-tile"><strong>Washington</strong><span>16 assigned cases, 3 overdue actions</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const stages = [
+      "OF-5",
+      "Interview",
+      "Conditional",
+      "Medical Eval",
+      "NBIS",
+      "RDF",
+      "JSTAR",
+      "Final Offer",
+      "EOD"
+    ];
+
+    const cases = [
+      {
+        name: "Avery Thompson",
+        title: "Correctional Officer",
+        announcement: "BOP-2026-1184",
+        specialist: "Garcia",
+        location: "FCI Seagoville, TX",
+        stage: "Medical Evaluation",
+        index: 3,
+        due: "Jun 3, 2026",
+        docs: "Medical evaluation pending",
+        risk: "risk"
+      },
+      {
+        name: "Morgan Lee",
+        title: "Human Resources Assistant",
+        announcement: "HR-2026-0442",
+        specialist: "Patel",
+        location: "Grand Prairie, TX",
+        stage: "NBIS",
+        index: 4,
+        due: "Jun 7, 2026",
+        docs: "NBIS initiated; awaiting release",
+        risk: "warn"
+      },
+      {
+        name: "Jordan Rivera",
+        title: "Health Services Technician",
+        announcement: "MED-2026-0277",
+        specialist: "Washington",
+        location: "FMC Fort Worth, TX",
+        stage: "RDF",
+        index: 5,
+        due: "Jun 10, 2026",
+        docs: "Relative disclosure form pending regional response",
+        risk: "warn"
+      },
+      {
+        name: "Taylor Nguyen",
+        title: "Budget Analyst",
+        announcement: "FIN-2026-0193",
+        specialist: "Garcia",
+        location: "Central Office",
+        stage: "Final Offer",
+        index: 7,
+        due: "Jun 14, 2026",
+        docs: "Packet complete",
+        risk: "good"
+      }
+    ];
+
+    const filters = {
+      search: "",
+      stage: "all",
+      specialist: "all"
+    };
+
+    function renderCases() {
+      const list = document.getElementById("caseList");
+      const query = filters.search.trim().toLowerCase();
+      const filtered = cases.filter(item => {
+        const text = `${item.name} ${item.title} ${item.announcement} ${item.location}`.toLowerCase();
+        return (!query || text.includes(query))
+          && (filters.stage === "all" || item.stage === filters.stage)
+          && (filters.specialist === "all" || item.specialist === filters.specialist);
+      });
+
+      if (!filtered.length) {
+        list.innerHTML = `<div class="case-card">No applicant cases match these filters.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(item => `
+        <article class="case-card">
+          <div class="case-top">
+            <div>
+              <h3>${item.name}</h3>
+              <div class="meta">
+                <span>${item.title}</span>
+                <span>${item.announcement}</span>
+                <span>${item.location}</span>
+                <span>HR: ${item.specialist}</span>
+              </div>
+            </div>
+            <span class="pill ${item.risk}">${item.stage}</span>
+          </div>
+          <div class="timeline" aria-label="${item.name} onboarding progression">
+            ${stages.map((stage, index) => `
+              <div class="step ${index < item.index ? "done" : index === item.index ? "current" : ""}">${stage}</div>
+            `).join("")}
+          </div>
+          <div class="meta">
+            <span>Next deadline: ${item.due}</span>
+            <span>Documentation: ${item.docs}</span>
+            <span>Estimated timeline: ${Math.max(8, 42 - item.index * 4)} days remaining</span>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    document.getElementById("caseSearch").addEventListener("input", event => {
+      filters.search = event.target.value;
+      renderCases();
+    });
+
+    document.getElementById("stageFilter").addEventListener("change", event => {
+      filters.stage = event.target.value;
+      renderCases();
+    });
+
+    document.getElementById("specialistFilter").addEventListener("change", event => {
+      filters.specialist = event.target.value;
+      renderCases();
+    });
+
+    renderCases();
+  </script>
+</body>
+</html>
